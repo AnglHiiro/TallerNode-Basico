@@ -1,0 +1,7 @@
+dnf update -y
+
+dnf module install nodejs:18 -y
+
+dnf install wget git -y
+
+npm install pm2 -g
