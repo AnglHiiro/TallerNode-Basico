@@ -2,14 +2,16 @@ const express = require('express')
 const router = express.Router()
 router.use(express.json())
 const fs = require('fs')
+const db = require('../../db/queries')
+const uuid = require('uuid')
 
-router.post('/user/create', (req, res) => {
+router.post('/user/create', async (req, res) => {
     try {
-        //BASE DE DATOS
+        let result = await db.users.createUser()
         res.json({
             stauts: 200, 
             message: 'El usuario ha sido creado con exito',
-            body: [{}]
+            body: result.body[0]
         })
     } catch (error) {
         res.json({status: 500, error: error.message})
