@@ -20,14 +20,14 @@ router.post('/user/create', async (req, res) => {
 
 // ---------------------------------
 
-router.get('/notes/:id', (req, res) => {
+router.get('/notes/:id', async (req, res) => {
     try {
         if(req.params.id){
-            //BASE DE DATOS
+            let result = await db.notes.getNotes(req.params.id)
             res.json({
                 stauts: 200, 
                 message: 'Se han encontrado notas',
-                body: [{}]
+                body: result.body
             })
         }else{
             res.json({status: 500, menssage: 'No se recibio un ID'})
@@ -37,7 +37,7 @@ router.get('/notes/:id', (req, res) => {
     }
 })
 
-router.post('/notes/create', (req, res) => {
+router.post('/notes/create', async (req, res) => {
     try {
         if(Object.keys(req.body).length === 0){
             res.json({
@@ -45,12 +45,13 @@ router.post('/notes/create', (req, res) => {
                 message: 'No se ha redcibido informacion'
             })
         }else{
-            //BASE DE DATOS
-
+            req.body.uuid = uuid.v4()
+            let result = await db.notes.createNotes(req.body)
+            console.log(result);
             res.json({
                 stauts: 200,
                 message: 'La nota ha sido creada correctamente',
-                body: [{}]
+                body: [{uuid: req.body.uuid}]
             })
         }
     } catch (error) {
@@ -66,7 +67,7 @@ router.post(`/notes/edit`, async (req, res) => {
                 message: 'Todos los campos son requeridos'
             });
         } else {
-
+            let result = await db.notes.updateNotes(req.body)
             res.json({
                 status: 200,
                 message: "La nota ha sido actualizada con exito",
@@ -87,7 +88,7 @@ router.post(`/notes/delete`, async (req, res) => {
                 message: 'Todos los campos son requeridos'
             });
         } else {
-
+            let result = await db.notes.deleteNotes(req.body)
             res.json({
                 status: 200,
                 message: "La nota ha sido eliminada con exito"

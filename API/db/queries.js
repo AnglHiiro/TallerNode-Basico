@@ -21,8 +21,9 @@ const users = {
 const notes = {
     createNotes: async (data) => {
         try {
-            const res = await query(`INSERT INTO NOTES (ID, ID_USER, TITLE, CONTENT, TIMESTAMP, TYPE, COLOR) VALUES (?, ?, ?, ?, NOW(), ?, ?);`, 
-            [data.id, data.uuid, data.title, data.content, data.type, data.color])
+            const res = await query(`INSERT INTO NOTES (UUID, ID_USER, TITLE, CONTENT, TIMESTAMP, TYPE, COLOR) VALUES (?, ?, ?, ?, NOW(), ?, ?);`, 
+            [data.uuid, data.id, data.title, data.content, data.type, data.color])
+            console.log(res);
             return {
                 body: res
             }
@@ -34,7 +35,7 @@ const notes = {
     },
     updateNotes: async (data) => {
         try {
-            const res = await query(`UPDATE NOTES SET TITLE = ?, CONTENT = ?, TYPE = ?, COLOR = ? WHERE ID = ?;`, 
+            const res = await query(`UPDATE NOTES SET TITLE = ?, CONTENT = ?, TYPE = ?, COLOR = ? WHERE UUID = ?;`, 
             [data.title, data.content, data.type, data.color, data.uuid])
             return {
                 body: res
@@ -47,7 +48,7 @@ const notes = {
     },
     deleteNotes: async (data) => {
         try {
-            const res = await query(`DELETE FROM NOTES WHERE ID = ?`, 
+            const res = await query(`DELETE FROM NOTES WHERE UUID = ?`, 
             [data.uuid])
             return {
                 body: res
@@ -60,7 +61,7 @@ const notes = {
     },
     getNotes: async (id) => {
         try {
-            const res = await query(`SELECT TITLE, CONTENT, TIMESTAMP, TYPE, COLOR FROM NOTES WHERE ID_USER = ?`, 
+            const res = await query(`SELECT UUID, TITLE, CONTENT, TIMESTAMP, TYPE, COLOR FROM NOTES WHERE ID_USER = ?`, 
             [id])
             return {
                 body: res

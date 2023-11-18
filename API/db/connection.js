@@ -1,26 +1,39 @@
+require('dotenv').config()
 const mysql = require('mysql')
-const config = require('./config');
 
-const pool = mysql.createConnection(config, (err) => {
+const credentials = {
+    host: process.env.DB_HOST || 'localhost',
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASS || '12345',
+    database: process.env.DB_DATABASE || 'NOTAS',
+    insecureAuth: true
+}
+
+const pool = mysql.createPool(credentials, (err) => {
     if(err){
-        console.log("[SERVIDOR]: ERROR: No se pudo conectar a la bd: " + err.message);
+        console.log('[DB]: Error, intentando conectarse.');
+        console.log(err);
         connectDB()
+    }else{
+        var date = new Date()
+        console.log('[DB]: Conectado a la base de datos ' + date.toLocaleString());
     }
-    console.log("[SERVIDOR]: Conexion exitosa");
 })
 
 let connectDB = () => {
     setTimeout(() => {
-        pool.getConnection((err) => {
+        pool.getConnection((err, connection) => {
             if(err){
-                console.log("[SERVIDOR]: ERROR: No se pudo conectar a la bd: " + err.message);
+                console.log('[DB]: Error, intentando conectarse.');
+                console.log(err);
                 connectDB()
+            }else{
+                var date = new Date()
+                console.log('[DB]: Conectado a la base de datos ' + date.toLocaleString());
             }
-            console.log("[SERVIDOR]: Conexion exitosa");
-        })
-    }, 3000)
+        }, 2000)
+    })
 }
-
 
 module.exports = {
     pool, mysql
